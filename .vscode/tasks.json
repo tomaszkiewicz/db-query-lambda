@@ -1,0 +1,33 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build & package",
+      "type": "shell",
+      "command": "/bin/bash",
+      "args": [
+        "-c",
+        "cd ${workspaceFolder}/cmd/lambda && go build -o lambda && zip ../../lambda.zip lambda && rm lambda"
+      ]
+    },
+    {
+      "label": "publish",
+      "type": "shell",
+      "command": "/bin/bash",
+      "args": [
+        "-c",
+        "[ -f env ] && eval $(cat env); AWS_PAGER='' aws lambda update-function-code --function-name db-query  --zip-file fileb://lambda.zip",
+      ],
+      "problemMatcher": [],
+      "dependsOn": [
+        "build & package"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
